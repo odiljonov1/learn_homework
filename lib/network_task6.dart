@@ -1,0 +1,81 @@
+import 'dart:convert';
+import 'dart:io';
+class Network6 {
+  HttpClient _network;
+
+  Network6._() : _network = HttpClient();
+
+  static final Network6 _instance = Network6._();
+  factory Network6() => _instance;
+
+  void close() => _network.close();
+  // DOMAIN
+  String baseUrl3 = "some-random-api.ml";
+
+  // APIS
+  String apiAlbums3 = "/animal";
+   // String apiPosts = "/cat";
+
+  // METHOD
+  Future<String> get(String baseUrl, String path, [final id]) async {
+    Uri url = Uri.https(baseUrl, "$path${id != null ? "/$id": ""}");
+
+    HttpClientRequest request = await _network.getUrl(url);
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+    HttpClientResponse response = await request.close();
+
+    String result = await response.transform(utf8.decoder).join();
+    return result;
+  }
+
+  Future<String> post(String baseUrl, String path, Map<String, Object> data) async {
+    Uri url = Uri.https(baseUrl, path);
+
+    HttpClientRequest request = await _network.postUrl(url);
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+    final body = utf8.encode(jsonEncode(data));
+    request.add(body);
+    HttpClientResponse response = await request.close();
+
+    String result = await response.transform(utf8.decoder).join();
+    return result;
+  }
+
+  Future<String> put(String baseUrl, String path, int id, Map<String, Object> data) async {
+    Uri url = Uri.https(baseUrl, "$path/$id");
+
+    HttpClientRequest request = await _network.putUrl(url);
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+    final body = utf8.encode(jsonEncode(data));
+    request.add(body);
+    HttpClientResponse response = await request.close();
+
+    String result = await response.transform(utf8.decoder).join();
+    return result;
+  }
+
+  Future<String> patch(String baseUrl, String path, int id, Map<String, Object> data) async {
+    Uri url = Uri.https(baseUrl, "$path/$id");
+
+    HttpClientRequest request = await _network.patchUrl(url);
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+    final body = utf8.encode(jsonEncode(data));
+    request.add(body);
+    HttpClientResponse response = await request.close();
+
+    String result = await response.transform(utf8.decoder).join();
+    return result;
+  }
+
+  Future<String> delete(String baseUrl, String path, int id) async {
+    Uri url = Uri.https(baseUrl, "$path/$id");
+
+    HttpClientRequest request = await _network.deleteUrl(url);
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+    HttpClientResponse response = await request.close();
+
+    String result = await response.transform(utf8.decoder).join();
+    return result;
+  }
+
+}
